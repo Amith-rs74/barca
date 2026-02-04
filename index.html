@@ -1,160 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Browser Chatbot</title>
-  <style>
-    body {
-      font-family: arial;
-      background: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<title>College Assistant Chatbot</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-    .chat-container {
-      width: 420px;
-      height: 520px;
-      background:#do8a7e;
-      border-radius: 18px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      
-    }
+  .chat-container {
+    width: 420px;
+    height: 580px;
+    background: #d08a7e; 
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
 
-    .chat-window {
-      flex: 1;
-      padding: 12px;
-      overflow-y: auto;
-      background-color:#c7877c;
-      border-radius:18px 18px 0 0;
-    }
+  .chat-window {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background-color: #c7877c;
+    border-radius: 18px 18px 0 0;
+  }
 
-    .message {
-      max-width: 75%;
-      padding: 8px 12px;
-      margin: 6px 0;
-      border-radius: 12px;
-      font-size: 14px;
-    }
+  .message {
+    max-width: 75%;
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 12px;
+    font-size: 14px;
+    word-wrap: break-word;
+  }
 
-    .user {
-      background: #007bff;
-      color: white;
-      margin-left: auto;
-      border-bottom-right-radius: 2px;
-    }
+  .user {
+    background: #007bff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 2px;
+  }
 
-    .bot {
-      background: #e5e5e5;
-      color: #000;
-      margin-right: auto;
-      border-bottom-left-radius: 2px;
-    }
+  .bot {
+    background: #e5e5e5;
+    color: #000;
+    margin-right: auto;
+    border-bottom-left-radius: 2px;
+  }
 
-    .input-area {
-      display: flex;
-      padding: 10px;
-      border-top: 1px solid #ddd;
-      gap: 6px;
-    }
+  .input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    gap: 6px;
+  }
 
-    input {
-      flex: 1;
-      padding: 8px;
-      font-size: 14px;
-      background-color:;
-      border-radius:5px;
-      border:none;
-      box-shadow: 1px 1px 1px 1px;
-    }
+  input {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    background-color: #fff;
+  }
 
-    button {
-      padding: 8px 14px;
-      cursor: pointer;
-      border-radius:5px;
-      border:none;
-      font-size:14px;
-      box-shadow: 1px 1px 1px 1px;
-      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    button:hover{
-        background-color:#c7877c;
-        
-    }
-  </style>
+  button {
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    font-size: 13px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #fff;
+  }
+
+  button:hover {
+    background-color: #c7877c;
+    color: white;
+  }
+
+  .quick-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0;
+    background-color: #e5e5e5;
+    gap: 4px;
+  }
+</style>
 </head>
 <body>
 
 <div class="chat-container">
   <div class="chat-window" id="chat"></div>
 
+  <!-- Quick reply buttons above input -->
+  <div class="quick-buttons">
+    <button onclick="quickReply('departments')">Departments</button>
+    <button onclick="quickReply('courses')">Courses</button>
+    <button onclick="quickReply('events')">Events</button>
+    <button onclick="quickReply('location')">Location</button>
+  </div>
+
   <div class="input-area">
-    <input id="input" type="text" placeholder="Type a message..." />
+    <input id="input" type="text" placeholder="Ask me about the college..." />
     <button onclick="send()">Send</button>
+    <button onclick="clearChat()">Clear</button>
   </div>
 </div>
 
 <script>
-  const chat = document.getElementById("chat");
-  const input = document.getElementById("input");
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
 
-  function addMessage(text, sender) {
-    const msg = document.createElement("div");
-    msg.className = "message " + sender;
-    msg.textContent = text;
-    chat.appendChild(msg);
-    chat.scrollTop = chat.scrollHeight;
+// Add message to chat
+function addMessage(text, sender) {
+  const msg = document.createElement("div");
+  msg.className = "message " + sender;
+  msg.textContent = text;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Bot knowledge base
+const botRules = [
+  { keywords: ["about college","college info","about"], reply: "Our college is AWH Engineering College, providing quality education in various engineering disciplines and MCA programs." },
+  { keywords: ["departments","department"], reply: "Our departments are:\n- Computer Science\n- Artificial Intelligence and Data Science\n- Electronics and Communication Engineering\n- Civil Engineering\n- MCA\n- Electrical and Electronics Engineering\n- Mechanical Engineering" },
+  { keywords: ["courses","course","btech"], reply: "We offer B.Tech programs in all the departments mentioned above." },
+  { keywords: ["events","event","fest","cultural","technical"], reply: "Upcoming events:\n- Saaya Cultural Fest: February 5 & 6\n- Athma Technical Fest: February 7" },
+  { keywords: ["location","address","where"], reply: "The college is located at Kuttikkattoor, Kozhikode, Kerala, India." },
+  { keywords: ["contact","phone","email"], reply: "You can contact the college at contact info@awhengg.org or call +91 94950 60633." }
+];
+
+const defaultReply = "I’m not sure about that. You can ask me about departments, courses, events, or location.";
+
+// Bot reply with greetings handling
+function botReply(userText) {
+  const text = userText.toLowerCase();
+
+  // Handle greetings
+  const greetings = ["hello","hi","hey"];
+  const howAreYou = ["how are you"];
+  const thanks = ["thank you","thanks"];
+
+  if (greetings.some(g => text.includes(g))) {
+    return "Hey! How are you?";
   }
 
-  function botReply(userText) {
-    const text = userText.toLowerCase();
-
-    if (text.includes("hello") || text.includes("hi")) {
-      return "Hey 🙂 How can I help you?";
-    }
-
-    if (text.includes("how are you")) {
-      return "I’m doing good! What’s up?";
-    }
-
-    if (text.includes("help")) {
-      return "Sure — tell me what you need help with.";
-    }
-
-    if (text.includes("name")) {
-      return "I don’t have a fancy name yet, but I’m your browser bot.";
-    }
-
-    if (text.includes("bye")) {
-      return "See you later! 👋";
-    }
-
-    return "Hmm, I’m not sure I understand. Can you rephrase?";
+  if (howAreYou.some(h => text.includes(h))) {
+    return "I’m doing great✨! How about you?";
   }
 
-  function send() {
-    const text = input.value.trim();
-    if (!text) return;
-
-    addMessage(text, "user");
-    input.value = "";
-
-    setTimeout(() => {
-      const reply = botReply(text);
-      addMessage(reply, "bot");
-    }, 400);
+  if (thanks.some(t => text.includes(t))) {
+    return "You’re welcome! 😊";
   }
 
-  input.addEventListener("keydown", e => {
-    if (e.key === "Enter") send();
-  });
+  // Check main college info rules
+  for (let rule of botRules) {
+    if (rule.keywords.some(k => text.includes(k))) {
+      return rule.reply;
+    }
+  }
 
-  // initial message
-  addMessage("Hi! I’m a simple browser chatbot. Try saying hello 👋", "bot");
+  return defaultReply;
+}
+
+// Send message
+function send() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+  input.value = "";
+
+  setTimeout(() => {
+    const reply = botReply(text);
+    addMessage(reply, "bot");
+  }, 400 + Math.random() * 400);
+}
+
+// Quick reply button
+function quickReply(text) {
+  input.value = text;
+  send();
+}
+
+// Clear chat
+function clearChat() {
+  chat.innerHTML = "";
+  addMessage("Welcome to AWH Engineering College Assistant! Ask me about departments, courses, events, or location, or click the buttons below.", "bot");
+}
+
+// Enter key sends message
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") send();
+});
+
+// Initial message
+addMessage("Welcome to AWH Engineering College Assistant! Ask me about departments, courses, events, or location, or click the buttons below.", "bot");
 </script>
 
 </body>
 </html>
+
