@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Browser Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      width: 420px;
+      height: 520px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .chat-window {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 8px 12px;
+      margin: 6px 0;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    .user {
+      background: #007bff;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 2px;
+    }
+
+    .bot {
+      background: #e5e5e5;
+      color: #000;
+      margin-right: auto;
+      border-bottom-left-radius: 2px;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      gap: 6px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-window" id="chat"></div>
+
+  <div class="input-area">
+    <input id="input" type="text" placeholder="Type a message..." />
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+
+<script>
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("input");
+
+  function addMessage(text, sender) {
+    const msg = document.createElement("div");
+    msg.className = "message " + sender;
+    msg.textContent = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function botReply(userText) {
+    const text = userText.toLowerCase();
+
+    if (text.includes("hello") || text.includes("hi")) {
+      return "Hey 🙂 How can I help you?";
+    }
+
+    if (text.includes("how are you")) {
+      return "I’m doing good! What’s up?";
+    }
+
+    if (text.includes("help")) {
+      return "Sure — tell me what you need help with.";
+    }
+
+    if (text.includes("name")) {
+      return "I don’t have a fancy name yet, but I’m your browser bot.";
+    }
+
+    if (text.includes("bye")) {
+      return "See you later! 👋";
+    }
+
+    return "Hmm, I’m not sure I understand. Can you rephrase?";
+  }
+
+  function send() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    setTimeout(() => {
+      const reply = botReply(text);
+      addMessage(reply, "bot");
+    }, 400);
+  }
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") send();
+  });
+
+  // initial message
+  addMessage("Hi! I’m a simple browser chatbot. Try saying hello 👋", "bot");
+</script>
+
+</body>
+</html>
